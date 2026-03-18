@@ -1,0 +1,47 @@
+name: Compilacion de Microservicios
+
+# 1. Cuándo se ejecuta este flujo
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+# 2. Qué tareas va a realizar
+jobs:
+  build:
+    runs-on: ubuntu-latest # Se ejecutará en un servidor Linux proveído por GitHub
+
+    steps:
+    # Paso A: Descargar tu código al servidor de GitHub
+    - name: Descargar el código del repositorio
+      uses: actions/checkout@v4
+
+    # Paso B: Instalar Java 17 (La versión que usas en tus pom.xml)
+    - name: Configurar Java 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven' # Guarda dependencias en caché para que las siguientes veces sea más rápido
+
+    # Paso C: Compilar Eureka
+    - name: Compilar Ecommerce-Eureka
+      run: |
+        cd Ecommerce-Eureka
+        chmod +x mvnw
+        ./mvnw clean package -DskipTests
+
+    # Paso D: Compilar Products
+    - name: Compilar Ecommerce-Product
+      run: |
+        cd Ecommerce-Product
+        chmod +x mvnw
+        ./mvnw clean package -DskipTests
+
+    # Paso E: Compilar Orders
+    - name: Compilar Ecommerce-Orders
+      run: |
+        cd Ecommerce-Orders
+        chmod +x mvnw
+        ./mvnw clean package -DskipTests
