@@ -40,8 +40,8 @@ services:
   product-service:
     image: hilariotetsu/ecommerce-product:latest # <--- CARPETA DE PRODUCTOS
     container_name: product-service
-    ports:
-      - "8081:8080" # Desde fuera usas 8081, dentro es 8080
+    #ports:
+      #- "8081:8080" # Desde fuera usas 8081, dentro es 8080
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/product_db
@@ -58,8 +58,8 @@ services:
   order-service:
     image: hilariotetsu/ecommerce-orders:latest # <--- CARPETA DE ORDENES
     container_name: order-service
-    ports:
-      - "8082:8080" # Desde fuera usas 8082, dentro es 8080
+    #ports:
+      #- "8082:8080" # Desde fuera usas 8082, dentro es 8080
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/order_db
@@ -82,6 +82,16 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+
+  api-gateway:
+    image: hilariotetsu/ecommerce-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080" # EL ÚNICO PUERTO QUE EXPORTAMOS PARA LOS USUARIOS
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - discovery-server    
 
 volumes:
   postgres_data:
